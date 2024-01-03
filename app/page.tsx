@@ -7,16 +7,16 @@ export default function Home() {
         <h1 className="text-4xl font-bold my-6">This is my digital home.</h1>
 
         <div className="flex justify-center space-x-5 my-6">
-          <a href="/Wall">
+          <a href="/wall">
             <Button variant="outline">Wall</Button>
           </a>
-          <a href="/Work">
+          <a href="/work">
             <Button variant="outline">Work</Button>
           </a>
-          <a href="/Goals">
+          <a href="/goals">
             <Button variant="outline">Goals</Button>
           </a>
-          <a href="/Projects">
+          <a href="/projects">
             <Button variant="outline">Projects</Button>
           </a>
         </div>
