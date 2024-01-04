@@ -11,7 +11,7 @@ export default function Home() {
             <Button variant="outline">Wall</Button>
           </a>
           <a href="/work">
-            <Button variant="outline">Work</Button>
+            <Button variant="outline">Work System</Button>
           </a>
           <a href="/goals">
             <Button variant="outline">Goals</Button>
@@ -23,7 +23,7 @@ export default function Home() {
 
         <section className="self-start w-full px-20">
           <h2 className="text-4xl font-semibold mt-12 mb-4">About Me</h2>
-          <p className="text-lg">{`It's a secret.`}</p>
+          <p className="text-lg">{`iykyk.`}</p>
         </section>
       </main>
     </div>

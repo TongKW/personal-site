@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import SupabaseContext from "@/contexts/Supabase";
 import { User } from "@supabase/gotrue-js";
 import { useContext, useEffect, useState } from "react";
@@ -8,6 +9,10 @@ export default function AuthTestArea() {
   const supabase = useContext(SupabaseContext);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const onSignOut = () => {
+    supabase.auth.signOut();
+  };
 
   useEffect(() => {
     (async () => {
@@ -36,6 +41,8 @@ export default function AuthTestArea() {
   return (
     <div>
       <h2>Authenticated User</h2>
+      <Button onClick={onSignOut}>Sign out</Button>
+
       <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   );

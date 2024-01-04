@@ -1,4 +1,4 @@
-import AuthTestArea from "@/components/Auth/Test";
+import AuthTestArea from "@/app/secret-login/test/Test";
 
 export default function SecretLogin() {
   return (
