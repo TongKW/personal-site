@@ -1,4 +1,3 @@
-import { GoalList } from "@/app/goals/GoalList";
 import {
   convertGoalsToExpandableGoals,
   dbGoalsToGoals,
@@ -8,6 +7,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AddItemDialogButton } from "./AddItemDialog";
+import { GoalList } from "./GoalList";
 
 async function fetchGoalsAndItems(supabase: SupabaseClient) {
   // Fetch goals and items from Supabase
