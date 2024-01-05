@@ -10,7 +10,7 @@ export default function Home() {
           <a href="/wall">
             <Button variant="outline">Wall</Button>
           </a>
-          <a href="/work">
+          <a href="/work/system">
             <Button variant="outline">Work System</Button>
           </a>
           <a href="/goals">

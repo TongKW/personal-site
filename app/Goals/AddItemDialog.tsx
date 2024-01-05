@@ -125,17 +125,11 @@ export function AddItemDialogButton(props: {
         <div className="flex flex-col gap-4 mt-4">
           <TitleFormInput id="goal-title-input" />
           <DeadlineSelect setValue={setDeadlineKey} />
-          <div className="grid grid-cols-6 items-center gap-4 mb-4">
-            <div className="text-right">Recurrent</div>
-            <div className="flex col-span-5">
-              <Checkbox
-                id="goal-is-recurrent"
-                onCheckedChange={(checked) =>
-                  setRecurrent(Boolean(checked.valueOf()))
-                }
-              />
-            </div>
-          </div>
+          <FormCheckbox
+            id="goal-is-recurrent"
+            title="Recurrent"
+            setChecked={setRecurrent}
+          />
           <FormSubmitButton loading={loading} />
         </div>
       </form>
@@ -146,6 +140,7 @@ export function AddItemDialogButton(props: {
     // Set up the form state
     const [loading, setLoading] = useState(false);
     const [deadlineKey, setDeadlineKey] = useState("");
+    const [finished, setFinished] = useState(false);
 
     // Handle form submit
     const handleSubmit = async (e: any) => {
@@ -162,6 +157,7 @@ export function AddItemDialogButton(props: {
       const { error } = await supabase.from("items").insert({
         user_id: userId,
         title: title,
+        finished: finished,
         deadline: localeTimestampToDbDate(
           getDeadline(deadlineKey) ?? defaultDeadline
         ),
@@ -176,11 +172,37 @@ export function AddItemDialogButton(props: {
         <div className="flex flex-col gap-4 mt-4">
           <TitleFormInput id="goal-item-title-input" />
           <DeadlineSelect setValue={setDeadlineKey} />
+          <FormCheckbox
+            id="item-is-finished"
+            title="Finished"
+            setChecked={setFinished}
+          />
           <FormSubmitButton loading={loading} />
         </div>
       </form>
     );
   }
+}
+
+function FormCheckbox(props: {
+  id: string;
+  title: string;
+  setChecked?: (checked: boolean) => void;
+}) {
+  const { id, title, setChecked } = props;
+  return (
+    <div className="grid grid-cols-6 items-center gap-4 mb-4">
+      <div className="text-right">{title}</div>
+      <div className="flex col-span-5">
+        <Checkbox
+          id={id}
+          onCheckedChange={(checked) =>
+            setChecked?.(Boolean(checked.valueOf()))
+          }
+        />
+      </div>
+    </div>
+  );
 }
 
 function TitleFormInput(props: { id: string }) {

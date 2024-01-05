@@ -55,6 +55,7 @@ export async function middleware(request: NextRequest) {
   )
 
   await supabase.auth.getSession()
+  response.headers.set('x-url', request.url);
 
   return response
 }

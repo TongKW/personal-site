@@ -120,7 +120,7 @@ export function UnitGoalItem(props: { data: UnitGoal }) {
     <div className={`border p-2 mb-2 shadow-inner rounded ${itemStyle}`}>
       <div className="flex justify-between items-center">
         <span>{data.item.title}</span>
-        <span>{data.item.finished ? "Done" : "Pending"}</span>
+        <span>{data.item.finished ? "" : "In progress"}</span>
       </div>
     </div>
   );
