@@ -1,3 +1,5 @@
+"use client";
+
 import { Spinner } from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,27 +21,45 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { getDeadline } from "@/lib/date/getDeadline";
+import SupabaseContext from "@/contexts/Supabase";
+import { localeTimestampToDbDate } from "@/lib/conversion/date";
+import { useRouter } from "next/navigation";
 
-export function AddItemDialogButton(props: { goalId: string }) {
-  const { goalId } = props;
+export function AddItemDialogButton(props: {
+  goalId?: string;
+  goalTitle?: string;
+  userId?: string;
+  defaultDeadline?: number;
+}) {
+  const supabase = useContext(SupabaseContext);
+  const router = useRouter();
+
+  const { goalId = "", goalTitle, userId, defaultDeadline } = props;
   const [mode, setMode] = useState("");
 
-  const title = mode
+  let title = mode
     ? mode === "goal"
       ? "Set a Goal"
       : "Add an item"
     : "Select mode";
 
+  if (goalTitle) title += ` under ${goalTitle}`;
+
   return (
     <Dialog
       onOpenChange={(open) => {
-        if (!open) setMode("");
+        if (!open) {
+          setMode("");
+          router.refresh();
+        }
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="outline">+</Button>
+        <Button variant="outline" className="shadow-md">
+          +
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
@@ -74,7 +94,9 @@ export function AddItemDialogButton(props: { goalId: string }) {
     const [deadlineKey, setDeadlineKey] = useState("");
 
     // Handle form submit
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
+      if (!userId) return;
+
       e.preventDefault(); // prevent the default form submit action
       console.log("Submitting");
 
@@ -82,17 +104,20 @@ export function AddItemDialogButton(props: { goalId: string }) {
         document.getElementById("goal-title-input") as HTMLInputElement
       ).value;
 
-      console.log(`deadlineKey: ${deadlineKey}`);
-
-      console.log({
-        parentGoalId: goalId,
+      // update database
+      setLoading(true);
+      await supabase.from("goals").insert({
+        user_id: userId,
+        recurrent: isRecurrent,
+        is_root: Boolean(goalId),
         title: title,
-        isRecurrent: isRecurrent,
-        deadline: getDeadline(deadlineKey),
+        deadline: localeTimestampToDbDate(
+          getDeadline(deadlineKey) ?? defaultDeadline
+        ),
+        parent_goal_id: goalId ? goalId : undefined,
       });
 
-      setLoading(true);
-      // TODO: update database
+      setLoading(false);
     };
 
     return (
@@ -123,7 +148,8 @@ export function AddItemDialogButton(props: { goalId: string }) {
     const [deadlineKey, setDeadlineKey] = useState("");
 
     // Handle form submit
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
+      if (!userId) return;
       e.preventDefault(); // prevent the default form submit action
       console.log("Submitting");
 
@@ -131,8 +157,18 @@ export function AddItemDialogButton(props: { goalId: string }) {
         document.getElementById("goal-item-title-input") as HTMLInputElement
       ).value;
 
+      // update database
       setLoading(true);
-      // TODO: update database
+      const { error } = await supabase.from("items").insert({
+        user_id: userId,
+        title: title,
+        deadline: localeTimestampToDbDate(
+          getDeadline(deadlineKey) ?? defaultDeadline
+        ),
+        goal_id: goalId,
+      });
+      console.log(error);
+      setLoading(false);
     };
 
     return (

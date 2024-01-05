@@ -30,10 +30,10 @@ export function getNextYearDeadline(): number {
   return nextYear.getTime();
 }
 
-export function getDeadline(key: string): number | null {
+export function getDeadline(key: string): number | undefined {
   if (key === "day") return getNextDayDeadline();
   if (key === "week") return getNextWeekDeadline();
   if (key === "month") return getNextMonthDeadline();
   if (key === "year") return getNextYearDeadline();
-  return null;
+  return undefined;
 }

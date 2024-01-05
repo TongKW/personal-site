@@ -2,12 +2,14 @@ import { GoalList } from "@/app/goals/GoalList";
 import {
   convertGoalsToExpandableGoals,
   dbGoalsToGoals,
+  dbItemsToItems,
 } from "@/lib/conversion/goals";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { AddItemDialogButton } from "./AddItemDialog";
 
-async function fetchData(supabase: SupabaseClient) {
+async function fetchGoalsAndItems(supabase: SupabaseClient) {
   // Fetch goals and items from Supabase
   const { data: dbGoals, error: goalsError } = await supabase
     .from("goals")
@@ -26,7 +28,7 @@ async function fetchData(supabase: SupabaseClient) {
 
   return {
     goals: dbGoalsToGoals(dbGoals),
-    items: [],
+    items: dbItemsToItems(dbItems),
   };
 }
 
@@ -45,15 +47,20 @@ export default async function Goals() {
     }
   );
   const session = (await supabase.auth.getSession()).data.session;
+  const userId = session?.user.id;
 
-  const { goals, items } = await fetchData(supabase);
-  const isAdmin = session?.user.id === process.env.NEXT_PUBLIC_ADMIN_ID;
+  const { goals, items } = await fetchGoalsAndItems(supabase);
+  const isAdmin = userId === process.env.NEXT_PUBLIC_ADMIN_ID;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <main className="flex flex-col items-center w-full flex-1 px-20 text-center">
-        <h1 className="text-4xl font-bold my-6">{`Goals`}</h1>
+        <div className="flex items-start w-full items-center gap-4">
+          <h1 className="text-3xl font-bold my-6">{`Goals`}</h1>
+          <AddItemDialogButton userId={userId} />
+        </div>
         <GoalList
+          userId={userId}
           goals={convertGoalsToExpandableGoals(goals, items)}
           readOnly={!isAdmin}
         />

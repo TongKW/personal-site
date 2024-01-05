@@ -63,7 +63,7 @@ export const dbGoalsToGoals = (dbGoals: any[]): Goal[] => {
   });
 };
 
-export const dbItemsToItem = (dbItems: any[]): GoalItem[] => {
+export const dbItemsToItems = (dbItems: any[]): GoalItem[] => {
   return dbItems.map((dbItem) => {
     return {
       type: "GoalItem",
