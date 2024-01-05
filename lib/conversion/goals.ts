@@ -1,5 +1,3 @@
-import { ExpandableGoal, UnitGoal } from "@/app/goals/GoalList";
-
 // Conversion function
 export const convertGoalsToExpandableGoals = (
   goals: Goal[],

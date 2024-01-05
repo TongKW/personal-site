@@ -3,21 +3,6 @@
 import { useState } from "react";
 import { AddItemDialogButton } from "./AddItemDialog";
 
-export interface ExpandableGoal {
-  type: "ExpandableGoal";
-  goal: Goal;
-  progress: number;
-  children: Array<ExpandableGoal | UnitGoal>;
-  parent?: ExpandableGoal;
-}
-
-export interface UnitGoal {
-  type: "UnitGoal";
-  item: GoalItem;
-  // parent?: ExpandableGoal;
-  progress: number;
-}
-
 export function GoalList(props: {
   userId?: string;
   goals: Array<ExpandableGoal | UnitGoal>;

@@ -26,3 +26,18 @@ interface Work {
   itemId: string;
   createdAt: number; // timestamp
 }
+
+interface ExpandableGoal {
+  type: "ExpandableGoal";
+  goal: Goal;
+  progress: number;
+  children: Array<ExpandableGoal | UnitGoal>;
+  parent?: ExpandableGoal;
+}
+
+interface UnitGoal {
+  type: "UnitGoal";
+  item: GoalItem;
+  // parent?: ExpandableGoal;
+  progress: number;
+}
