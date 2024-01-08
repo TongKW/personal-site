@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AddItemDialogButton } from "./AddItemDialog";
 import { GoalList } from "./GoalList";
+import { getSupabaseUser } from "@/lib/supabase/server";
 
 async function fetchGoalsAndItems(supabase: SupabaseClient) {
   // Fetch goals and items from Supabase
@@ -33,21 +34,7 @@ async function fetchGoalsAndItems(supabase: SupabaseClient) {
 }
 
 export default async function Goals() {
-  const cookieStore = cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
-  const session = (await supabase.auth.getSession()).data.session;
-  const userId = session?.user.id;
+  const { supabase, userId } = await getSupabaseUser();
 
   const { goals, items } = await fetchGoalsAndItems(supabase);
   const isAdmin = userId === process.env.NEXT_PUBLIC_ADMIN_ID;

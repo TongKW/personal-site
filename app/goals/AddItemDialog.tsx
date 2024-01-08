@@ -109,7 +109,7 @@ export function AddItemDialogButton(props: {
       await supabase.from("goals").insert({
         user_id: userId,
         recurrent: isRecurrent,
-        is_root: Boolean(goalId),
+        is_root: !Boolean(goalId),
         title: title,
         deadline: localeTimestampToDbDate(
           getDeadline(deadlineKey) ?? defaultDeadline

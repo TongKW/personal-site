@@ -41,24 +41,89 @@ export const convertGoalsToExpandableGoals = (
     });
 };
 
-export const dbGoalsToGoals = (dbGoals: any[]): Goal[] => {
-  return dbGoals.map((dbGoal) => {
-    return {
-      type: "Goal",
-      id: dbGoal.id,
-      title: dbGoal.title,
-      recurrent: dbGoal.recurrent,
-      recurrentInterval: dbGoal.recurrent_interval
-        ? dbGoal.recurrent_interval
-        : undefined,
-      recurrentFreq: dbGoal.recurrent_freq ? dbGoal.recurrent_freq : undefined,
-      isRoot: dbGoal.is_root,
-      parentGoalId: dbGoal.parent_goal_id ? dbGoal.parent_goal_id : "",
-      deadline: dbGoal.deadline
-        ? new Date(dbGoal.deadline).getTime()
-        : dbGoal.deadline,
-    };
+export interface MinGoalNode {
+  id: string;
+  children: string[]; // Array of goalId
+}
+
+export const getMinGoalTree = (goals: Goal[]): MinGoalNode[] => {
+  const minGoalNodes: { [key: string]: MinGoalNode } = {};
+
+  // Create nodes for each goal
+  goals.forEach((goal) => {
+    minGoalNodes[goal.id] = { id: goal.id, children: [] };
   });
+
+  // Populate children for each node
+  goals.forEach((goal) => {
+    if (!goal.isRoot) {
+      const parentNode = minGoalNodes[goal.parentGoalId];
+      if (parentNode) {
+        parentNode.children.push(goal.id);
+      }
+    }
+  });
+
+  // Return only root nodes as they contain all children recursively
+  return goals
+    .filter((goal) => goal.isRoot)
+    .map((goal) => minGoalNodes[goal.id]);
+};
+
+export const findMinGoalNode = (
+  tree: MinGoalNode[],
+  goalId: string
+): MinGoalNode | null => {
+  for (const node of tree) {
+    if (node.id === goalId) {
+      return node;
+    }
+    const childNode = findMinGoalNode(
+      node.children.map((id) => ({ id, children: [] })),
+      goalId
+    );
+    if (childNode) {
+      return childNode;
+    }
+  }
+  return null;
+};
+
+export const isIdUnderGoalNode = (
+  node: MinGoalNode,
+  goalId: string
+): boolean => {
+  if (node.id === goalId) {
+    return true;
+  }
+  for (const childId of node.children) {
+    if (isIdUnderGoalNode({ id: childId, children: [] }, goalId)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const dbGoalToGoal = (dbGoal: any): Goal => {
+  return {
+    type: "Goal",
+    id: dbGoal.id,
+    title: dbGoal.title,
+    recurrent: dbGoal.recurrent,
+    recurrentInterval: dbGoal.recurrent_interval
+      ? dbGoal.recurrent_interval
+      : undefined,
+    recurrentFreq: dbGoal.recurrent_freq ? dbGoal.recurrent_freq : undefined,
+    isRoot: dbGoal.is_root,
+    parentGoalId: dbGoal.parent_goal_id ? dbGoal.parent_goal_id : "",
+    deadline: dbGoal.deadline
+      ? new Date(dbGoal.deadline).getTime()
+      : dbGoal.deadline,
+  };
+};
+
+export const dbGoalsToGoals = (dbGoals: any[]): Goal[] => {
+  return dbGoals.map((dbGoal) => dbGoalToGoal(dbGoal));
 };
 
 export const dbItemsToItems = (dbItems: any[]): GoalItem[] => {
