@@ -18,18 +18,14 @@ import { useEffect, useState } from "react";
  *   - router.refresh to update WorkProgress and WorkHistory
  *
  */
-export function WorkProgressRing(props: {
-  progressItems: ProgressItem[];
-  refetch: () => void;
-}) {
-  const { progressItems: items, refetch } = props;
+export function WorkProgressRing(props: { progressItems: ProgressItem[] }) {
+  const { progressItems: items } = props;
   const progress = progressItemsToProgress(items);
 
   const [mode, setMode] = useState<"progress" | "timer">("progress");
   const [duration, setDuration] = useState<number>(30);
 
   const onAddWork = () => {
-    // TODO: pop a dialog for added work info
     return;
   };
 
@@ -54,7 +50,7 @@ export function ProgressRing(props: { progress: number; onClick: () => void }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={onClick}
-      className={`relative`}
+      className={`relative cursor-pointer`}
     >
       <Ring progress={progress} color={ringColor} />
       <div className="absolute inset-0 flex justify-center items-center">
