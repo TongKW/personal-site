@@ -4,13 +4,11 @@ import { cn } from "@/lib/utils";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -37,9 +35,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
 import SupabaseContext from "@/contexts/supabase";
-import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { FormGroupSelect } from "@/components/ui/form";
 
 export function AddTargetDialog(props: { userId?: string; goals: Goal[] }) {
   const router = useRouter();
@@ -102,40 +99,23 @@ export function AddTargetDialog(props: { userId?: string; goals: Goal[] }) {
               setSelectedGoal={setSelectedGoal}
             />
           </RowWrapper>
-          <IntervalSelect setValue={setIntervalValue} />
+          <FormGroupSelect
+            setValue={setIntervalValue}
+            label="Interval"
+            items={[
+              { value: "day", key: "Day" },
+              { value: "week", key: "Week" },
+              { value: "month", key: "Month" },
+              { value: "year", key: "Year" },
+            ]}
+          />
+
           <TargetInput id="target-amount-input" />
           <FormSubmitButton loading={loading} />
         </div>
       </form>
     );
   }
-}
-
-function IntervalSelect(props: { setValue: (value: string) => void }) {
-  const { setValue } = props;
-  return (
-    <div className="grid gap-4">
-      <div className="grid grid-cols-6 items-center gap-4">
-        <Label htmlFor="interval" className="text-right">
-          Interval
-        </Label>
-        <Select onValueChange={(value) => setValue?.(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Choose interval" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Interval</SelectLabel>
-              <SelectItem value="day">Day</SelectItem>
-              <SelectItem value="week">Week</SelectItem>
-              <SelectItem value="month">Month</SelectItem>
-              <SelectItem value="year">Year</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  );
 }
 
 function GoalSelectBox(props: {

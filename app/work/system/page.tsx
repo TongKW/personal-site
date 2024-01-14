@@ -1,6 +1,6 @@
 import { getSupabaseUser } from "@/lib/supabase/server";
 import { WorkSystemContent } from "./page-content";
-import { AddTargetDialog } from "./add-target-dialog";
+import { AddTargetDialog } from "./components/add-target-dialog";
 import { MinGoalNode, getMinGoalTree } from "@/lib/conversion/goals";
 import { fetchProgressItems } from "./db/fetch-progress-item";
 import { getGoals } from "./db/get-goals";
@@ -24,7 +24,6 @@ export default async function WorkSystem({
 }) {
   const n = getN();
   const interval = getInterval();
-
   const { supabase, userId } = await getSupabaseUser();
 
   const [goals, targetRule, targets] = await Promise.all([
@@ -32,9 +31,7 @@ export default async function WorkSystem({
     getTargetRule(supabase),
     getTargets(supabase),
   ]);
-
   const goalTree = getMinGoalTree(goals);
-
   const progressItems = await fetchProgressItems({
     interval,
     n,

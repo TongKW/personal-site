@@ -26,6 +26,7 @@ import { getDeadline } from "@/lib/date/get-deadline";
 import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
 import SupabaseContext from "@/contexts/supabase";
+import { FormGroupSelect } from "@/components/ui/form";
 
 export function AddItemDialogButton(props: {
   goalId?: string;
@@ -233,27 +234,16 @@ function FormSubmitButton(props: { loading: boolean }) {
 function DeadlineSelect(props: { setValue?: (value: string) => void }) {
   const { setValue } = props;
   return (
-    <div className="grid gap-4">
-      <div className="grid grid-cols-6 items-center gap-4">
-        <Label htmlFor="deadline" className="text-right">
-          Deadline
-        </Label>
-        <Select onValueChange={(value) => setValue?.(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Choose deadline" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Deadline</SelectLabel>
-              <SelectItem value="day">Day</SelectItem>
-              <SelectItem value="week">Week</SelectItem>
-              <SelectItem value="month">Month</SelectItem>
-              <SelectItem value="year">Year</SelectItem>
-              <SelectItem value="none">None</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+    <FormGroupSelect
+      setValue={setValue}
+      label="Deadline"
+      items={[
+        { value: "day", key: "Day" },
+        { value: "week", key: "Week" },
+        { value: "month", key: "Month" },
+        { value: "year", key: "Year" },
+        { value: "none", key: "None" },
+      ]}
+    />
   );
 }
