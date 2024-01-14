@@ -1,7 +1,7 @@
 import "server-only";
 
 import { MinGoalNode } from "@/lib/conversion/goals";
-import { pastIntervalStartTime } from "@/lib/date/intervalStartTime";
+import { pastIntervalStartTime } from "@/lib/date/interval-start-time";
 import { getWorkProgressItems } from "@/lib/db/progress";
 
 export async function fetchProgressItems(props: {

@@ -1,6 +1,6 @@
 import { getSupabaseUser } from "@/lib/supabase/server";
-import { WorkSystemContent } from "./PageContent";
-import { AddTargetDialog } from "./AddTargetDialog";
+import { WorkSystemContent } from "./page-content";
+import { AddTargetDialog } from "./add-target-dialog";
 import { MinGoalNode, getMinGoalTree } from "@/lib/conversion/goals";
 import { fetchProgressItems } from "./db/fetch-progress-item";
 import { getGoals } from "./db/get-goals";

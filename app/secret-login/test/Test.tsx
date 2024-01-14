@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import SupabaseContext from "@/contexts/Supabase";
+import SupabaseContext from "@/contexts/supabase";
 import { User } from "@supabase/gotrue-js";
 import { useContext, useEffect, useState } from "react";
 

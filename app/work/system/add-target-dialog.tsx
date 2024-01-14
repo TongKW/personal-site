@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { Spinner } from "@/components/Spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -36,7 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
-import SupabaseContext from "@/contexts/Supabase";
+import SupabaseContext from "@/contexts/supabase";
 import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";

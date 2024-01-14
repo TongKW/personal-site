@@ -6,8 +6,8 @@ import {
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { AddItemDialogButton } from "./AddItemDialog";
-import { GoalList } from "./GoalList";
+import { AddItemDialogButton } from "./add-item-dialog";
+import { GoalList } from "./goal-list";
 import { getSupabaseUser } from "@/lib/supabase/server";
 
 async function fetchGoalsAndItems(supabase: SupabaseClient) {

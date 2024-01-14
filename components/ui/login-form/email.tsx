@@ -13,7 +13,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import SupabaseContext from "@/contexts/Supabase";
+import SupabaseContext from "@/contexts/supabase";
 import { useContext } from "react";
 import { signInWithEmail } from "@/lib/supabase/login/email-password";
 

@@ -1,4 +1,4 @@
-import { WorkProgressRing } from "./WorkProgress/components/Ring";
+import { WorkProgressRing } from "./components/ring";
 
 export function WorkSystemContent(props: {
   userId?: string;

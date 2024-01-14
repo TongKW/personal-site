@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AddItemDialogButton } from "./AddItemDialog";
+import { AddItemDialogButton } from "./add-item-dialog";
 
 export function GoalList(props: {
   userId?: string;

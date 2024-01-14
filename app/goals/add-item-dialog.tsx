@@ -1,6 +1,6 @@
 "use client";
 
-import { Spinner } from "@/components/Spinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,8 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
-import { getDeadline } from "@/lib/date/getDeadline";
-import SupabaseContext from "@/contexts/Supabase";
+import { getDeadline } from "@/lib/date/get-deadline";
+import SupabaseContext from "@/contexts/supabase";
 import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
 
