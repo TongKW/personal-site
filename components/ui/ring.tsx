@@ -6,8 +6,6 @@ export function Ring(props: {
 }) {
   const { progress, color, shimmer = false, rainbow = false } = props;
 
-  console.log(`progress = ${progress}`);
-
   // Calculate the circumference of the circle
   const radius = 115;
   const circumference = radius * 2 * Math.PI;

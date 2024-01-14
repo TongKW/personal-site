@@ -1,6 +1,5 @@
 export function WorkHistoryTable(props: { works: Work[] }) {
   const { works } = props;
-  console.log(works);
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

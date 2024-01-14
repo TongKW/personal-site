@@ -2,7 +2,6 @@ import { GoalNode, dbGoalToGoal, findGoalNode } from "./goals";
 
 export const dbTargetsToTargets = (dbTargets: any[]): Target[] => {
   return dbTargets.map((dbTarget) => {
-    // TODO: finish the following
     return {
       id: dbTarget.id,
       goal: dbGoalToGoal(dbTarget.goal),
@@ -74,9 +73,11 @@ export const targetsToProgressItems = (args: {
 };
 
 export const progressItemsToProgress = (items: ProgressItem[]) => {
-  let total = 0;
+  let current = 0;
+  let target = 0;
   for (const item of items) {
-    total += Math.min(1, item.current / item.target);
+    current += Math.min(1, item.current / item.target) * item.target;
+    target += item.target;
   }
-  return total / items.length;
+  return current / target;
 };

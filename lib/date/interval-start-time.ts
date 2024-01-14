@@ -42,6 +42,7 @@ export function pastIntervalStartTime(args: {
   interval: "day" | "week" | "month" | "year";
   timeZone: string;
   date?: Date;
+  randomTime?: boolean;
 }) {
   const {
     n,
@@ -55,4 +56,72 @@ export function pastIntervalStartTime(args: {
   if (n == 0) return startDate;
   const newDate = new Date(startDate.getTime() - 100);
   return pastIntervalStartTime({ n: n - 1, interval, timeZone, date: newDate });
+}
+
+export function intervalStartToEndFormatString(args: {
+  n: number;
+  interval: "day" | "week" | "month" | "year";
+  timeZone?: string;
+}): string {
+  const { n, interval, timeZone = "Asia/Hong_Kong" } = args;
+  console.log(args);
+
+  // Get the start date of the current interval
+  const startDate = pastIntervalStartTime({ n: 0, interval, timeZone });
+
+  // If n is 0, we are looking at the current interval
+  if (n === 0) {
+    if (interval === "day") {
+      // If the interval is "day", return just the start date as a string
+      return startDate.toDateString();
+    } else {
+      // For longer intervals, calculate the end date of the interval
+      let endDate = new Date(startDate);
+      switch (interval) {
+        case "week":
+          endDate.setDate(endDate.getDate() + 6);
+          break;
+        case "month":
+          endDate.setMonth(endDate.getMonth() + 1);
+          endDate.setDate(0); // Last day of the previous month
+          break;
+        case "year":
+          endDate.setFullYear(endDate.getFullYear() + 1);
+          endDate.setMonth(0);
+          endDate.setDate(0); // Last day of the previous year
+          break;
+      }
+      // Return the formatted string with both dates
+      return `${startDate.toDateString()} to ${endDate.toDateString()}`;
+    }
+  } else {
+    // If n is not 0, we are looking at past intervals
+    // Calculate the past start date for the given interval
+    const pastStartDate = pastIntervalStartTime({ n, interval, timeZone });
+    let pastEndDate = new Date(pastStartDate);
+
+    if (interval === "day") {
+      // If the interval is "day", return just the start date as a string
+      return pastStartDate.toDateString();
+    }
+
+    // Calculate the end date for the past interval
+    switch (interval) {
+      case "week":
+        pastEndDate.setDate(pastEndDate.getDate() + 6);
+        break;
+      case "month":
+        pastEndDate.setMonth(pastEndDate.getMonth() + 1);
+        pastEndDate.setDate(0); // Last day of the previous month
+        break;
+      case "year":
+        pastEndDate.setFullYear(pastEndDate.getFullYear() + 1);
+        pastEndDate.setMonth(0);
+        pastEndDate.setDate(0); // Last day of the previous year
+        break;
+    }
+
+    // Return the formatted string with both dates
+    return `${pastStartDate.toDateString()} to ${pastEndDate.toDateString()}`;
+  }
 }

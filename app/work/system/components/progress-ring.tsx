@@ -10,6 +10,14 @@ import { useRouter } from "next/navigation";
 import { addWork } from "@/lib/db/work";
 import { finishGoalItem } from "@/lib/db/goals";
 
+export interface IntermediateWork {
+  duration: number;
+  title: string;
+  itemId: string;
+  itemTitle?: string;
+  userId: string;
+}
+
 /**
  *
  * if mode is "progress": Show a progress ring
@@ -25,21 +33,13 @@ import { finishGoalItem } from "@/lib/db/goals";
  *   - router.refresh to update WorkProgress and WorkHistory
  *
  */
-
-export interface IntermediateWork {
-  duration: number;
-  title: string;
-  itemId: string;
-  itemTitle?: string;
-  userId: string;
-}
-
 export function WorkProgressRing(props: {
   userId?: string;
   progressItems: ProgressItem[];
   goalItems: GoalItem[];
+  currentN: number;
 }) {
-  const { userId, progressItems: items, goalItems } = props;
+  const { userId, progressItems: items, goalItems, currentN } = props;
   const router = useRouter();
 
   const progress = progressItemsToProgress(items);
@@ -48,6 +48,7 @@ export function WorkProgressRing(props: {
   const [duration, setDuration] = useState<number>(30); // in minutes
 
   const lastWork = useRef<IntermediateWork | null>(null);
+  const [lastWorkTitle, setLastWorkTitle] = useState("");
 
   const [addWorkDialogOpen, setAddWorkDialogOpen] = useState(false);
   const [finishWorkDialogOpen, setFinishWorkDialogOpen] = useState(false);
@@ -56,6 +57,7 @@ export function WorkProgressRing(props: {
     if (!userId) return;
     const { work, startClock } = args;
     lastWork.current = work;
+    setLastWorkTitle(work.itemTitle ?? "");
 
     if (startClock) {
       setDuration(work.duration);
@@ -82,6 +84,9 @@ export function WorkProgressRing(props: {
       userId,
       isFinished: itemFinished,
       title: work.title,
+      createdAt: currentN
+        ? new Date(new Date().getTime() - currentN * 86400000).toISOString()
+        : undefined, // TODO: disabled this option after all previous work is updated
     };
 
     if (itemFinished) {
@@ -90,6 +95,7 @@ export function WorkProgressRing(props: {
       await addWork(addWorkArgs);
     }
     lastWork.current = null;
+    setLastWorkTitle("");
     router.refresh();
   };
 
@@ -107,6 +113,7 @@ export function WorkProgressRing(props: {
         setOpen={setFinishWorkDialogOpen}
         userId={userId}
         onFinishWork={onFinishWork}
+        itemTitle={lastWorkTitle}
       />
       <RingArea />
     </>

@@ -9,19 +9,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import {
-  FormCheckbox,
-  FormGroupSelect,
-  FormTextInput,
-} from "@/components/ui/form";
+import { FormCheckbox } from "@/components/ui/form";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 export function FinishWorkDialog(props: {
   open: boolean;
   setOpen: (open: boolean) => void;
   userId?: string;
   onFinishWork: (itemFinished: boolean) => Promise<void>;
+  itemTitle?: string;
 }) {
-  const { open, setOpen, userId, onFinishWork } = props;
+  const { open, setOpen, userId, onFinishWork, itemTitle } = props;
 
   return (
     <Dialog open={open}>
@@ -30,7 +28,8 @@ export function FinishWorkDialog(props: {
         onClose={() => setOpen(false)}
       >
         <DialogHeader>
-          <DialogTitle>TODO: change this</DialogTitle>
+          <DialogTitle>Have you finished the goal item?</DialogTitle>
+          <DialogDescription>{itemTitle}</DialogDescription>
         </DialogHeader>
         <MainContent />
       </DialogContent>
@@ -46,7 +45,6 @@ export function FinishWorkDialog(props: {
       if (!userId) return;
 
       e.preventDefault(); // prevent the default form submit action
-      console.log("Submitting");
 
       // update database
       setLoading(true);

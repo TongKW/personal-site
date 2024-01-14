@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AddItemDialogButton } from "./add-item-dialog";
+import { TriangleRightIcon, TriangleDownIcon } from "@radix-ui/react-icons";
 
 export function GoalList(props: {
   userId?: string;
@@ -73,7 +74,13 @@ export function ExpandableGoalItem(props: {
         tabIndex={0}
       >
         <span>{data.goal.title}</span>
-        {data.children.length ? <span>{isExpanded ? "▼" : "►"}</span> : <></>}
+        {data.children.length ? (
+          <span>
+            {isExpanded ? <TriangleDownIcon /> : <TriangleRightIcon />}
+          </span>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className="w-full mb-4 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

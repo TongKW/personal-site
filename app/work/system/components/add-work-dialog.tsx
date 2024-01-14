@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import { addWork } from "@/lib/db/work";
 
 export function AddWorkDialog(props: {
   items: GoalItem[];
@@ -196,10 +195,6 @@ function GoalItemSelectBox(props: {
                     const target = items.find(
                       (item) => getTitle(item).toLowerCase() === title
                     );
-                    console.log(`item title: ${getTitle(item)}`);
-                    console.log(`title     : ${title}`);
-                    console.log(`target = `);
-                    console.log(target);
                     if (target) setSelectedItem(target);
                     setOpen(false);
                   }}

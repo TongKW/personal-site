@@ -142,7 +142,7 @@ export function AddItemDialogButton(props: {
 
       // update database
       setLoading(true);
-      const { error } = await supabase.from("items").insert({
+      await supabase.from("items").insert({
         user_id: userId,
         title: title,
         finished: finished,
@@ -151,7 +151,6 @@ export function AddItemDialogButton(props: {
         ),
         goal_id: goalId,
       });
-      console.log(error);
       setLoading(false);
     };
 

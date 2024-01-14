@@ -7,6 +7,7 @@ import { getGoals } from "./db/get-goals";
 import { getTargetRule } from "./db/get-target-rule";
 import { getTargets } from "./db/get-targets";
 import { getItemsWithGoalTitle } from "@/lib/db/goals";
+import { intervalStartToEndFormatString } from "@/lib/date/interval-start-time";
 
 export interface fetchWorkProgressArgs {
   interval: TimeInterval;
@@ -56,6 +57,11 @@ export default async function WorkSystem({
         goalItems={goalItems}
         progressItems={progressItems}
         works={works}
+        title={intervalStartToEndFormatString({
+          n,
+          interval,
+        })}
+        currentN={n}
       />
     </div>
   );

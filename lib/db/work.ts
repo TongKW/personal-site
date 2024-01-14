@@ -7,6 +7,7 @@ export async function addWork(args: {
   itemId: string;
   isFinished: boolean;
   title: string;
+  createdAt?: string;
 }) {
   const { supabase, userId } = await getSupabaseUser();
   if (!userId) return;
@@ -17,5 +18,6 @@ export async function addWork(args: {
     title: args.title,
     user_id: userId,
     is_finished: args.isFinished,
+    created_at: args.createdAt,
   });
 }
