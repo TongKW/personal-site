@@ -23,9 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
 import { getDeadline } from "@/lib/date/get-deadline";
-import SupabaseContext from "@/contexts/supabase";
 import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
+import SupabaseContext from "@/contexts/supabase";
 
 export function AddItemDialogButton(props: {
   goalId?: string;

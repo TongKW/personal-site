@@ -1,4 +1,4 @@
-import { SupabaseEmailLoginForm } from "@/components/LoginForm/email";
+import { SupabaseEmailLoginForm } from "@/components/ui/login-form/email";
 
 export default function SecretLogin() {
   return (
