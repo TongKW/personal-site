@@ -1,9 +1,4 @@
-import {
-  MinGoalNode,
-  dbGoalToGoal,
-  findMinGoalNode,
-  isIdUnderGoalNode,
-} from "./goals";
+import { GoalNode, dbGoalToGoal, findGoalNode } from "./goals";
 
 export const dbTargetsToTargets = (dbTargets: any[]): Target[] => {
   return dbTargets.map((dbTarget) => {
@@ -27,19 +22,21 @@ export const dbTargetRuleToLocal = (dbRule: any): TargetRule => {
 const getWorkScore = (args: {
   target: Target;
   rule: TargetRule;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   works: Work[];
 }): number => {
   const { target, rule, goalTree, works } = args;
   let total = 0;
 
   for (const work of works) {
-    const workingGoal = findMinGoalNode(goalTree, target.goal.id);
+    const workingGoal = findGoalNode(goalTree, target.goal.id);
     if (!workingGoal) continue;
-    const isTarget = isIdUnderGoalNode(workingGoal, work.item.parentGoalId);
-    if (!isTarget) continue;
-    total += rule.hourWork * work.duration;
-    total += rule.finishItem * (work.isFinishing ? 1 : 0);
+
+    const targetNode = findGoalNode([workingGoal], work.item.parentGoalId);
+    if (!targetNode) continue;
+
+    total += (rule.hourWork * work.duration) / 60;
+    total += rule.finishItem * (work.isFinished ? 1 : 0);
   }
 
   return total;
@@ -48,7 +45,7 @@ const getWorkScore = (args: {
 export const targetToProgressItem = (args: {
   target: Target;
   rule: TargetRule;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   works: Work[];
 }): ProgressItem => {
   const { target } = args;
@@ -62,7 +59,7 @@ export const targetToProgressItem = (args: {
 export const targetsToProgressItems = (args: {
   targets: Target[];
   rule: TargetRule;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   works: Work[];
 }): ProgressItem[] => {
   const { targets, rule, goalTree, works } = args;

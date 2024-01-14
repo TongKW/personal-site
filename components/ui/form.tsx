@@ -12,7 +12,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { Input } from "./input";
+import { Checkbox } from "./checkbox";
 import {
   Select,
   SelectContent,
@@ -21,7 +22,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@radix-ui/react-select";
+} from "./select";
 
 const Form = FormProvider;
 
@@ -175,7 +176,7 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = "FormMessage";
 
-// Custom components
+// Custom components (TODO: allow ways to customize style)
 function FormCheckbox(props: {
   id: string;
   title: string;
@@ -239,6 +240,22 @@ function FormGroupSelect(props: {
   );
 }
 
+function FormTextInput(props: { id: string; label: string }) {
+  const { id, label } = props;
+
+  const htmlForLabel = label.replaceAll(" ", "-").toLowerCase();
+  return (
+    <div className="grid gap-4">
+      <div className="grid grid-cols-6 items-center gap-4">
+        <Label htmlFor={htmlForLabel} className="text-right">
+          {label}
+        </Label>
+        <Input id={id} className="col-span-5" />
+      </div>
+    </div>
+  );
+}
+
 export {
   useFormField,
   Form,
@@ -250,4 +267,5 @@ export {
   FormField,
   FormCheckbox,
   FormGroupSelect,
+  FormTextInput,
 };

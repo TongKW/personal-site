@@ -1,13 +1,13 @@
 import "server-only";
 
-import { MinGoalNode } from "@/lib/conversion/goals";
+import { GoalNode } from "@/lib/conversion/goals";
 import { pastIntervalStartTime } from "@/lib/date/interval-start-time";
 import { getWorkProgressItems } from "@/lib/db/progress";
 
 export async function fetchProgressItems(props: {
   interval: TimeInterval;
   n: number;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   targets: Target[];
 }) {
   const timeZone = "Asia/Hong_Kong"; // TODO: change this to global context

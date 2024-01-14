@@ -1,16 +1,17 @@
 import { getSupabaseUser } from "@/lib/supabase/server";
 import { WorkSystemContent } from "./page-content";
 import { AddTargetDialog } from "./components/add-target-dialog";
-import { MinGoalNode, getMinGoalTree } from "@/lib/conversion/goals";
+import { GoalNode, getGoalTree } from "@/lib/conversion/goals";
 import { fetchProgressItems } from "./db/fetch-progress-item";
 import { getGoals } from "./db/get-goals";
 import { getTargetRule } from "./db/get-target-rule";
 import { getTargets } from "./db/get-targets";
+import { getItemsWithGoalTitle } from "@/lib/db/goals";
 
 export interface fetchWorkProgressArgs {
   interval: TimeInterval;
   n: number;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   targets: Target[];
 }
 export type fetchWorkProgressType = (
@@ -31,13 +32,16 @@ export default async function WorkSystem({
     getTargetRule(supabase),
     getTargets(supabase),
   ]);
-  const goalTree = getMinGoalTree(goals);
-  const progressItems = await fetchProgressItems({
-    interval,
-    n,
-    goalTree,
-    targets,
-  });
+  const goalTree = getGoalTree(goals);
+  const [{ progressItems, works }, goalItems] = await Promise.all([
+    fetchProgressItems({
+      interval,
+      n,
+      goalTree,
+      targets,
+    }),
+    getItemsWithGoalTitle(supabase, goals),
+  ]);
 
   return (
     <div className="flex flex-col w-full">
@@ -49,7 +53,9 @@ export default async function WorkSystem({
         rule={targetRule}
         targets={targets}
         goals={goals}
+        goalItems={goalItems}
         progressItems={progressItems}
+        works={works}
       />
     </div>
   );

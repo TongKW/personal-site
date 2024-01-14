@@ -3,7 +3,12 @@
 import { Ring } from "@/components/ui/ring";
 import { progressItemsToProgress } from "@/lib/conversion/target";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AddWorkDialog } from "./add-work-dialog";
+import { FinishWorkDialog } from "./finish-work-dialog";
+import { useRouter } from "next/navigation";
+import { addWork } from "@/lib/db/work";
+import { finishGoalItem } from "@/lib/db/goals";
 
 /**
  *
@@ -20,31 +25,105 @@ import { useEffect, useState } from "react";
  *   - router.refresh to update WorkProgress and WorkHistory
  *
  */
+
+export interface IntermediateWork {
+  duration: number;
+  title: string;
+  itemId: string;
+  itemTitle?: string;
+  userId: string;
+}
+
 export function WorkProgressRing(props: {
   userId?: string;
   progressItems: ProgressItem[];
+  goalItems: GoalItem[];
 }) {
-  const { userId, progressItems: items } = props;
+  const { userId, progressItems: items, goalItems } = props;
+  const router = useRouter();
+
   const progress = progressItemsToProgress(items);
 
   const [mode, setMode] = useState<"progress" | "timer">("progress");
-  const [duration, setDuration] = useState<number>(30);
+  const [duration, setDuration] = useState<number>(30); // in minutes
 
-  const onAddWork = () => {
-    return;
+  const lastWork = useRef<IntermediateWork | null>(null);
+
+  const [addWorkDialogOpen, setAddWorkDialogOpen] = useState(false);
+  const [finishWorkDialogOpen, setFinishWorkDialogOpen] = useState(false);
+
+  const onAddWork = (args: { work: IntermediateWork; startClock: boolean }) => {
+    if (!userId) return;
+    const { work, startClock } = args;
+    lastWork.current = work;
+
+    if (startClock) {
+      setDuration(work.duration);
+      setMode("timer");
+    } else {
+      setFinishWorkDialogOpen(true);
+    }
   };
 
-  const onFinishWork = () => {
-    // TODO: pop a dialog for finished work info
-    return;
+  const onFinishTimer = () => {
+    setMode("progress");
+    setFinishWorkDialogOpen(true);
   };
 
-  if (mode === "progress") {
-    return (
-      <ProgressRing userId={userId} progress={progress} onClick={onAddWork} />
-    );
+  const onFinishWork = async (itemFinished: boolean) => {
+    const work = lastWork.current;
+    if (!work || !userId) return;
+
+    const itemId = work.itemId;
+
+    const addWorkArgs = {
+      duration: work.duration,
+      itemId,
+      userId,
+      isFinished: itemFinished,
+      title: work.title,
+    };
+
+    if (itemFinished) {
+      await Promise.all([addWork(addWorkArgs), finishGoalItem(itemId)]);
+    } else {
+      await addWork(addWorkArgs);
+    }
+    lastWork.current = null;
+    router.refresh();
+  };
+
+  return (
+    <>
+      <AddWorkDialog
+        open={addWorkDialogOpen}
+        setOpen={setAddWorkDialogOpen}
+        items={goalItems}
+        userId={userId}
+        onAddWork={onAddWork}
+      />
+      <FinishWorkDialog
+        open={finishWorkDialogOpen}
+        setOpen={setFinishWorkDialogOpen}
+        userId={userId}
+        onFinishWork={onFinishWork}
+      />
+      <RingArea />
+    </>
+  );
+
+  function RingArea() {
+    if (mode === "progress") {
+      return (
+        <ProgressRing
+          userId={userId}
+          progress={progress}
+          onClick={() => setAddWorkDialogOpen(true)}
+        />
+      );
+    }
+    return <TimerRing duration={duration} onFinish={onFinishTimer} />;
   }
-  return <TimerRing duration={duration} onFinish={onFinishWork} />;
 }
 
 export function ProgressRing(props: {
@@ -64,7 +143,7 @@ export function ProgressRing(props: {
       onClick={userId ? onClick : undefined}
       className={clsx("relative", { "cursor-pointer": userId })}
     >
-      <Ring progress={progress} color={ringColor} />
+      <Ring progress={progress * 100} color={ringColor} shimmer />
       <div className="absolute inset-0 flex justify-center items-center">
         {userId && hover ? (
           <span className="select-none">Add new work</span>
@@ -110,7 +189,8 @@ export function TimerRing(props: {
 
   return (
     <div className="relative">
-      <Ring progress={timerProgress} color={ringColor} />
+      <Ring progress={Math.round(timerProgress * 100)} color={ringColor} />
+
       <div className="absolute inset-0 flex justify-center items-center">
         <span>{`${minutes.toString().padStart(2, "0")}:${seconds
           .toString()

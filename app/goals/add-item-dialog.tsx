@@ -10,23 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useContext, useState } from "react";
 import { getDeadline } from "@/lib/date/get-deadline";
 import { localeTimestampToDbDate } from "@/lib/conversion/date";
 import { useRouter } from "next/navigation";
 import SupabaseContext from "@/contexts/supabase";
-import { FormGroupSelect } from "@/components/ui/form";
+import { FormGroupSelect, FormTextInput } from "@/components/ui/form";
 
 export function AddItemDialogButton(props: {
   goalId?: string;
@@ -99,7 +88,6 @@ export function AddItemDialogButton(props: {
       if (!userId) return;
 
       e.preventDefault(); // prevent the default form submit action
-      console.log("Submitting");
 
       const title = (
         document.getElementById("goal-title-input") as HTMLInputElement
@@ -124,7 +112,7 @@ export function AddItemDialogButton(props: {
     return (
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 mt-4">
-          <TitleFormInput id="goal-title-input" />
+          <FormTextInput id="goal-title-input" label="Title" />
           <DeadlineSelect setValue={setDeadlineKey} />
           <FormCheckbox
             id="goal-is-recurrent"
@@ -147,7 +135,6 @@ export function AddItemDialogButton(props: {
     const handleSubmit = async (e: any) => {
       if (!userId) return;
       e.preventDefault(); // prevent the default form submit action
-      console.log("Submitting");
 
       const title = (
         document.getElementById("goal-item-title-input") as HTMLInputElement
@@ -171,7 +158,7 @@ export function AddItemDialogButton(props: {
     return (
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 mt-4">
-          <TitleFormInput id="goal-item-title-input" />
+          <FormTextInput id="goal-item-title-input" label="Title" />
           <DeadlineSelect setValue={setDeadlineKey} />
           <FormCheckbox
             id="item-is-finished"
@@ -201,20 +188,6 @@ function FormCheckbox(props: {
             setChecked?.(Boolean(checked.valueOf()))
           }
         />
-      </div>
-    </div>
-  );
-}
-
-function TitleFormInput(props: { id: string }) {
-  const { id } = props;
-  return (
-    <div className="grid gap-4">
-      <div className="grid grid-cols-6 items-center gap-4">
-        <Label htmlFor="title" className="text-right">
-          Title
-        </Label>
-        <Input id={id} className="col-span-5" />
       </div>
     </div>
   );

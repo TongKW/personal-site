@@ -16,6 +16,7 @@ interface GoalItem {
   type: "GoalItem";
   id: string;
   parentGoalId: string;
+  parentGoalTitle?: string;
   finished: boolean;
   deadline: number; // timestamp
   title: string;
@@ -44,7 +45,7 @@ interface Work {
   title: string;
   item: GoalItem;
   createdAt: number; // timestamp
-  isFinishing?: boolean;
+  isFinished?: boolean;
 }
 
 // UI interface for Work progress

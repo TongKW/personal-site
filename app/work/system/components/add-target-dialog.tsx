@@ -11,15 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -68,7 +59,6 @@ export function AddTargetDialog(props: { userId?: string; goals: Goal[] }) {
       if (!userId) return;
 
       e.preventDefault(); // prevent the default form submit action
-      console.log("Submitting");
 
       const target = parseFloat(
         (document.getElementById("target-amount-input") as HTMLInputElement)
@@ -109,7 +99,6 @@ export function AddTargetDialog(props: { userId?: string; goals: Goal[] }) {
               { value: "year", key: "Year" },
             ]}
           />
-
           <TargetInput id="target-amount-input" />
           <FormSubmitButton loading={loading} />
         </div>

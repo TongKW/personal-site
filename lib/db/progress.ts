@@ -1,25 +1,28 @@
-import { MinGoalNode } from "../conversion/goals";
+import { GoalNode } from "../conversion/goals";
 import { targetsToProgressItems } from "../conversion/target";
 import { getSupabaseUser } from "../supabase/server";
 
 export async function getWorkProgressItems(args: {
   startTime: Date;
   endTime?: Date;
-  goalTree: MinGoalNode[];
+  goalTree: GoalNode[];
   targets: Target[];
-}): Promise<ProgressItem[]> {
+}): Promise<{ progressItems: ProgressItem[]; works: Work[] }> {
   const { startTime, endTime, goalTree, targets } = args;
   const { supabase } = await getSupabaseUser();
 
   // 1. Get the target-rule and all works first
   const [rule, works] = await Promise.all([getRule(), getWorks()]);
 
-  return targetsToProgressItems({
-    targets,
-    rule,
-    goalTree,
-    works,
-  });
+  return {
+    progressItems: targetsToProgressItems({
+      targets,
+      rule,
+      goalTree,
+      works,
+    }),
+    works: works,
+  };
 
   async function getRule(): Promise<TargetRule> {
     const { data, error } = await supabase
@@ -58,6 +61,7 @@ export async function getWorkProgressItems(args: {
         id: d.id,
         createdAt: new Date(d.created_at).getTime(),
         duration: d.duration,
+        isFinished: d.is_finished,
         item: {
           type: "GoalItem",
           id: item.id,

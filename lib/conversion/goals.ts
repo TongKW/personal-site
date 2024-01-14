@@ -41,67 +41,75 @@ export const convertGoalsToExpandableGoals = (
     });
 };
 
-export interface MinGoalNode {
+export interface GoalNode {
   id: string;
-  children: string[]; // Array of goalId
+  children: GoalNode[]; // Array of goalId
 }
 
-export const getMinGoalTree = (goals: Goal[]): MinGoalNode[] => {
-  const minGoalNodes: { [key: string]: MinGoalNode } = {};
+// interface Goal {
+//   type: "Goal";
+//   id: string;
+//   title: string;
+//   recurrent?: boolean;
+//   recurrentInterval?: string;
+//   recurrentFreq?: number;
+//   isRoot: boolean;
+//   parentGoalId: string;
+//   deadline?: number; // timestamp
+// }
 
-  // Create nodes for each goal
+export const getGoalTree = (goals: Goal[]): GoalNode[] => {
+  const goalNodes: { [key: string]: GoalNode } = {};
+  const rootNodes: GoalNode[] = [];
+
+  // First pass: create a node for each goal
   goals.forEach((goal) => {
-    minGoalNodes[goal.id] = { id: goal.id, children: [] };
+    goalNodes[goal.id] = { id: goal.id, children: [] };
   });
 
-  // Populate children for each node
+  // Second pass: construct the tree
   goals.forEach((goal) => {
-    if (!goal.isRoot) {
-      const parentNode = minGoalNodes[goal.parentGoalId];
+    if (goal.isRoot) {
+      rootNodes.push(goalNodes[goal.id]);
+    } else {
+      const parentNode = goalNodes[goal.parentGoalId];
       if (parentNode) {
-        parentNode.children.push(goal.id);
+        parentNode.children.push(goalNodes[goal.id]);
+      } else {
+        // Handle the case where the parent goal does not exist in the input array
+        // Depending on the use case, you might want to throw an error,
+        // ignore the orphaned node, or handle it in some other way
+        console.error(
+          `Parent goal with ID ${goal.parentGoalId} not found for goal with ID ${goal.id}`
+        );
       }
     }
   });
-
-  // Return only root nodes as they contain all children recursively
-  return goals
-    .filter((goal) => goal.isRoot)
-    .map((goal) => minGoalNodes[goal.id]);
+  return rootNodes;
 };
 
-export const findMinGoalNode = (
-  tree: MinGoalNode[],
+export const findGoalNode = (
+  tree: GoalNode[],
   goalId: string
-): MinGoalNode | null => {
-  for (const node of tree) {
-    if (node.id === goalId) {
-      return node;
-    }
-    const childNode = findMinGoalNode(
-      node.children.map((id) => ({ id, children: [] })),
-      goalId
-    );
-    if (childNode) {
-      return childNode;
-    }
-  }
-  return null;
-};
+): GoalNode | null => {
+  let result: GoalNode | null = null;
 
-export const isIdUnderGoalNode = (
-  node: MinGoalNode,
-  goalId: string
-): boolean => {
-  if (node.id === goalId) {
-    return true;
-  }
-  for (const childId of node.children) {
-    if (isIdUnderGoalNode({ id: childId, children: [] }, goalId)) {
-      return true;
+  // Recursive function to search through the tree
+  const searchTree = (nodes: GoalNode[]) => {
+    for (const node of nodes) {
+      if (node.id === goalId) {
+        result = node;
+        return; // Node found, finish search
+      }
+      if (node.children.length) {
+        searchTree(node.children); // Search recursively in children
+        if (result) return; // If the node was found in the subtree, finish search
+      }
     }
-  }
-  return false;
+  };
+
+  searchTree(tree); // Start the search
+  return result;
 };
 
 export const dbGoalToGoal = (dbGoal: any): Goal => {

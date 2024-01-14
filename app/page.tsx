@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Ring } from "@/components/ui/ring";
 
 export default function Home() {
   return (
@@ -20,6 +21,8 @@ export default function Home() {
             <Button variant="outline">Projects</Button>
           </a>
         </div>
+
+        {/* <Ring progress={120} color={"text-green-500"} shimmer /> */}
 
         <section className="self-start w-full px-20">
           <h2 className="text-4xl font-semibold mt-12 mb-4">About Me</h2>
