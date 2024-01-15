@@ -3,7 +3,7 @@
 import { Ring } from "@/components/ui/ring";
 import { progressItemsToProgress } from "@/lib/conversion/target";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AddWorkDialog } from "./add-work-dialog";
 import { FinishWorkDialog } from "./finish-work-dialog";
 import { useRouter } from "next/navigation";
@@ -51,7 +51,8 @@ export function WorkProgressRing(props: {
   const progress = progressItemsToProgress(items);
 
   const [mode, setMode] = useState<"progress" | "timer">("progress");
-  const [duration, setDuration] = useState<number>(30); // in minutes
+  const [endTime, setEndTime] = useState<number>(); // in milliseconds
+  const [duration, setDuration] = useState<number>(30);
 
   const lastWork = useRef<IntermediateWork | null>(null);
   const [lastWorkTitle, setLastWorkTitle] = useState("");
@@ -67,6 +68,7 @@ export function WorkProgressRing(props: {
     setLastWorkTitle(work.itemTitle ?? "");
 
     if (startClock) {
+      setEndTime(new Date().getTime() + work.duration * 60000);
       setDuration(work.duration);
       setMode("timer");
     } else {
@@ -76,6 +78,7 @@ export function WorkProgressRing(props: {
 
   const onFinishTimer = () => {
     setMode("progress");
+    setEndTime(undefined);
     setFinishWorkDialogOpen(true);
   };
 
@@ -139,7 +142,11 @@ export function WorkProgressRing(props: {
     }
     return (
       <div className="flex flex-col gap-4">
-        <TimerRing duration={duration} onFinish={onFinishTimer} />
+        <TimerRing
+          endTime={endTime}
+          duration={duration}
+          onFinish={onFinishTimer}
+        />
         <p className="font-medium text-gray-500">{`In progress: ${lastWorkTitle}`}</p>
       </div>
     );
@@ -224,40 +231,60 @@ export function ProgressRing(props: {
 }
 
 export function TimerRing(props: {
-  duration: number; // in minutes
+  endTime?: number; // a timestamp in the future as the end time
+  duration: number;
   onFinish: () => void; // triggered once it drops to 0
 }) {
-  const { duration, onFinish } = props;
+  const { endTime = 0, duration, onFinish } = props;
 
-  const [timeLeft, setTimeLeft] = useState(duration * 60); // Convert minutes to seconds
+  // Calculate initial time left in seconds
+  const calculateTimeLeft = useCallback(() => {
+    const currentTime = Date.now();
+    return Math.floor((endTime - currentTime) / 1000);
+  }, [endTime]);
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   const ringColor = "text-orange-500";
 
   useEffect(() => {
-    // Only run the timer if there's time left
-    if (timeLeft > 0) {
-      const timerId = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
+    // Update timeLeft immediately to avoid initial delay
+    setTimeLeft(calculateTimeLeft());
 
-      // Clear the timeout if the component is unmounted
-      return () => clearTimeout(timerId);
-    } else {
-      onFinish();
-    }
-  }, [timeLeft, onFinish]);
+    const updateTimer = () => {
+      const newTimeLeft = calculateTimeLeft();
+      setTimeLeft(newTimeLeft);
+
+      // Update document title
+      const minutes = Math.floor(newTimeLeft / 60);
+      const seconds = newTimeLeft % 60;
+      document.title = `${minutes.toString().padStart(2, "0")}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
+
+      if (newTimeLeft <= 0) {
+        onFinish();
+        document.title = "Timer Finished"; // Reset the document title or set a new one
+      }
+    };
+
+    // Run the timer every second
+    const timerId = setInterval(updateTimer, 1000);
+
+    // Clear the interval if the component is unmounted or the timeLeft is 0
+    return () => clearInterval(timerId);
+  }, [calculateTimeLeft, endTime, onFinish]);
 
   // Convert time left into minutes and seconds
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // Calculate the progress percentage
-  const initialTotalSeconds = duration * 60;
-  const timerProgress = timeLeft / initialTotalSeconds;
+  // Calculate the initial total seconds and progress percentage
+  const progress = Math.floor((endTime - Date.now()) / 1000) / (duration * 60);
 
   return (
     <div className="relative">
-      <Ring progress={Math.round(timerProgress * 100)} color={ringColor} />
+      <Ring progress={Math.round(progress * 100)} color={ringColor} />
 
       <div className="absolute inset-0 flex justify-center items-center">
         <span>{`${minutes.toString().padStart(2, "0")}:${seconds
