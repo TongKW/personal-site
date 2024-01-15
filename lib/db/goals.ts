@@ -17,21 +17,28 @@ export async function finishGoalItem(goalId: string) {
 
 export async function getItemsWithGoalTitle(
   supabase: SupabaseClient,
-  goals: Goal[]
+  goals: Goal[],
+  option?: { showFinished: boolean }
 ) {
   // 1. Create map of goal.id -> goal.title
   const goalMap = new Map();
   for (const goal of goals) goalMap.set(goal.id, goal.title);
 
-  // 2. Query items from db
-  const { data: dbItems, error: itemsError } = await supabase
+  let query = supabase
     .from("items")
     .select("*")
     .eq("user_id", process.env.NEXT_PUBLIC_ADMIN_ID);
 
+  if (option && !option.showFinished) {
+    query = query.eq("finished", false);
+  }
+
+  // 2. Query items from db
+  const { data: dbItems, error: itemsError } = await query;
+
   // Handle any errors
   if (itemsError) {
-    throw new Error(`Error fetching data: ${itemsError}`);
+    throw new Error(`Error fetching data: ${JSON.stringify(itemsError)}`);
   }
 
   return dbItemsToItems(dbItems).map((item) => {

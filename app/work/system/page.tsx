@@ -41,7 +41,7 @@ export default async function WorkSystem({
       goalTree,
       targets,
     }),
-    getItemsWithGoalTitle(supabase, goals),
+    getItemsWithGoalTitle(supabase, goals, { showFinished: false }),
   ]);
 
   return (

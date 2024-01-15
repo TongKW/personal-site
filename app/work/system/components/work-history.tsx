@@ -34,7 +34,10 @@ export function WorkHistoryTable(props: { works: Work[] }) {
               </th>
               <td className="px-6 py-4"> {work.title}</td>
               <td className="px-6 py-4">
-                {new Date(work.createdAt).toTimeString()}
+                {new Date(work.createdAt).toLocaleTimeString("en-HK", {
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
               </td>
               <td className="px-6 py-4">{work.duration}</td>
             </tr>
