@@ -194,15 +194,6 @@ export function ProgressRing(props: {
   }
 
   function ProgressTooltipContent(props: { items: ProgressItem[] }) {
-    /*
-    interface ProgressItem {
-      title: string; // Title of the goal attached to a target
-      target: number; // the target score of the target
-      current: number; // current score to the target
-    }
-
-    Goal: return 
-    */
     return (
       <div className="flex flex-col gap-2 w-full text-gray-500">
         {props.items.map((item) => {
@@ -212,7 +203,7 @@ export function ProgressRing(props: {
               <span className="font-medium">{`${title}: `}</span>
               <span>{`current = `}</span>
               <span
-                className={clsx("font-medium", {
+                className={clsx("font-bold", {
                   "text-red-500": current === 0,
                   "text-orange-500": current < target,
                   "text-green-500": current >= target,
@@ -223,7 +214,7 @@ export function ProgressRing(props: {
               <span>{`, `}</span>
 
               <span>{`target = `}</span>
-              <span className="text-black font-medium">{item.target}</span>
+              <span className="text-black font-bold">{item.target}</span>
             </div>
           );
         })}
