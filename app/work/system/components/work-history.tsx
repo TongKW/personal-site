@@ -1,6 +1,8 @@
 export function WorkHistoryTable(props: { works: Work[] }) {
   const { works } = props;
 
+  console.log(works.filter((work) => work.title.includes("format")));
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -37,6 +39,7 @@ export function WorkHistoryTable(props: { works: Work[] }) {
                 {new Date(work.createdAt).toLocaleTimeString("en-HK", {
                   hour: "numeric",
                   minute: "numeric",
+                  timeZone: "Asia/Hong_Kong",
                 })}
               </td>
               <td className="px-6 py-4">{work.duration}</td>

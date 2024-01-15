@@ -1,7 +1,6 @@
 import { WorkProgressRing } from "./components/progress-ring";
 import { WorkHistoryTable } from "./components/work-history";
 import { TitleArea } from "./components/title-area";
-import Loading from "./loading";
 
 export function WorkSystemContent(props: {
   userId?: string;
