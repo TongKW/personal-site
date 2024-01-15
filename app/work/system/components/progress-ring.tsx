@@ -9,6 +9,12 @@ import { FinishWorkDialog } from "./finish-work-dialog";
 import { useRouter } from "next/navigation";
 import { addWork } from "@/lib/db/work";
 import { finishGoalItem } from "@/lib/db/goals";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface IntermediateWork {
   duration: number;
@@ -127,6 +133,7 @@ export function WorkProgressRing(props: {
           userId={userId}
           progress={progress}
           onClick={() => setAddWorkDialogOpen(true)}
+          items={items}
         />
       );
     }
@@ -143,8 +150,9 @@ export function ProgressRing(props: {
   userId?: string;
   progress: number;
   onClick: () => void;
+  items: ProgressItem[];
 }) {
-  const { userId, progress, onClick } = props;
+  const { userId, progress, onClick, items } = props;
 
   const [hover, setHover] = useState(false);
   const ringColor = "text-green-500";
@@ -157,15 +165,71 @@ export function ProgressRing(props: {
       className={clsx("relative", { "cursor-pointer": userId })}
     >
       <Ring progress={progress * 100} color={ringColor} shimmer />
+
       <div className="absolute inset-0 flex justify-center items-center">
-        {userId && hover ? (
-          <span className="select-none">Add new work</span>
-        ) : (
-          <span>{Math.round(progress * 100)}%</span>
-        )}
+        <ProgressTooltip>
+          {userId && hover ? (
+            <span className="select-none cursor-pointer">Add new work</span>
+          ) : (
+            <span className="cursor-pointer">
+              {Math.round(progress * 100)}%
+            </span>
+          )}
+        </ProgressTooltip>
       </div>
     </div>
   );
+
+  function ProgressTooltip(props: { children: React.ReactNode }) {
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>{props.children}</TooltipTrigger>
+          <TooltipContent>
+            <ProgressTooltipContent items={items} />
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
+  function ProgressTooltipContent(props: { items: ProgressItem[] }) {
+    /*
+    interface ProgressItem {
+      title: string; // Title of the goal attached to a target
+      target: number; // the target score of the target
+      current: number; // current score to the target
+    }
+
+    Goal: return 
+    */
+    return (
+      <div className="flex flex-col gap-2 w-full text-gray-500">
+        {props.items.map((item) => {
+          const { title, current, target } = item;
+          return (
+            <div key={title}>
+              <span className="font-medium">{`${title}: `}</span>
+              <span>{`current = `}</span>
+              <span
+                className={clsx("font-medium", {
+                  "text-red-500": current === 0,
+                  "text-orange-500": current < target,
+                  "text-green-500": current >= target,
+                })}
+              >
+                {item.current}
+              </span>
+              <span>{`, `}</span>
+
+              <span>{`target = `}</span>
+              <span className="text-black font-medium">{item.target}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 }
 
 export function TimerRing(props: {
