@@ -79,6 +79,7 @@ export function AddWorkDialog(props: {
           title,
           itemId: selectedItem.id,
           userId,
+          itemTitle: selectedItem.title,
         },
         startClock: !fastForward,
       });

@@ -57,6 +57,7 @@ export function WorkProgressRing(props: {
     if (!userId) return;
     const { work, startClock } = args;
     lastWork.current = work;
+
     setLastWorkTitle(work.itemTitle ?? "");
 
     if (startClock) {
@@ -129,7 +130,12 @@ export function WorkProgressRing(props: {
         />
       );
     }
-    return <TimerRing duration={duration} onFinish={onFinishTimer} />;
+    return (
+      <div className="flex flex-col gap-4">
+        <TimerRing duration={duration} onFinish={onFinishTimer} />
+        <p className="font-medium text-gray-500">{`In progress: ${lastWorkTitle}`}</p>
+      </div>
+    );
   }
 }
 
