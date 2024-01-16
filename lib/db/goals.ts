@@ -4,15 +4,12 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { dbItemsToItems } from "../conversion/goals";
 import { getSupabaseUser } from "../supabase/server";
 
-export async function finishGoalItem(goalId: string) {
+export async function finishGoalItem(itemId: string) {
   const { userId, supabase } = await getSupabaseUser();
 
-  if (userId) return;
-  await supabase
-    .from("items")
-    .update({ finished: true })
-    .eq("goal_id", goalId)
-    .eq("user_id", userId);
+  if (!userId) return;
+
+  await supabase.from("items").update({ finished: true }).eq("id", itemId);
 }
 
 export async function getItemsWithGoalTitle(

@@ -64,7 +64,6 @@ export function intervalStartToEndFormatString(args: {
   timeZone?: string;
 }): string {
   const { n, interval, timeZone = "Asia/Hong_Kong" } = args;
-  console.log(args);
 
   // Get the start date of the current interval
   const startDate = pastIntervalStartTime({ n: 0, interval, timeZone });
