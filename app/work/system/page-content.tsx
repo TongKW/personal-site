@@ -46,7 +46,9 @@ export function WorkSystemContent(props: {
       </div>
       <p className="text-left">
         <span className="font-semibold">Work History</span>
-        <span className="font-normal text-sm text-gray-500 pl-4">{`(total duration: ${getTotalDuration()} hours)`}</span>
+        <span className="font-normal text-sm text-gray-500 pl-4">{`(total duration: ${parseFloat(
+          getTotalDuration().toFixed(2)
+        )} hours)`}</span>
       </p>
 
       <WorkHistoryTable works={works} />

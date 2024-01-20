@@ -216,7 +216,7 @@ export function ProgressRing(props: {
                   "text-green-500": current >= target,
                 })}
               >
-                {item.current}
+                {parseFloat(item.current.toFixed(2))}
               </span>
               <span>{`, `}</span>
 

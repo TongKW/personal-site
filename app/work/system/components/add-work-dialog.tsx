@@ -104,6 +104,7 @@ export function AddWorkDialog(props: {
             label="Duration"
             items={[
               { value: "5" },
+              { value: "15" },
               { value: "30" },
               { value: "60" },
               { value: "90" },
