@@ -57,7 +57,7 @@ export function AddWorkDialog(props: {
   function MainContent() {
     const [loading, setLoading] = useState(false);
     const [fastForward, setFastForward] = useState(false);
-    const [duration, setDuration] = useState(0.5);
+    const [duration, setDuration] = useState(30);
     const [selectedItem, setSelectedItem] = useState<GoalItem>();
 
     // Handle form submit
@@ -75,7 +75,7 @@ export function AddWorkDialog(props: {
       setLoading(true);
       onAddWork({
         work: {
-          duration: duration * 60,
+          duration,
           title,
           itemId: selectedItem.id,
           userId,
@@ -103,11 +103,12 @@ export function AddWorkDialog(props: {
             setValue={(value) => setDuration(parseFloat(value))}
             label="Duration"
             items={[
-              { value: "0.5" },
-              { value: "1" },
-              { value: "1.5" },
-              { value: "2" },
-              { value: "2.5" },
+              { value: "5" },
+              { value: "30" },
+              { value: "60" },
+              { value: "90" },
+              { value: "120" },
+              { value: "150" },
             ]}
           />
           <FormCheckbox
