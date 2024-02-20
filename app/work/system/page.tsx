@@ -45,7 +45,7 @@ export default async function WorkSystem({
   ]);
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full pt-4">
       {!targets.length && userId && (
         <AddTargetDialog userId={userId} goals={goals} />
       )}

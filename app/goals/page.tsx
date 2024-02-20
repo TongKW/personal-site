@@ -38,18 +38,15 @@ export default async function Goals() {
   const isAdmin = userId === process.env.NEXT_PUBLIC_ADMIN_ID;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <main className="flex flex-col items-center w-full flex-1 px-20 text-center">
-        <div className="flex items-start w-full items-center gap-4">
-          <h1 className="text-3xl font-bold my-6">{`Goals`}</h1>
-          {isAdmin && <AddItemDialogButton userId={userId} />}
-        </div>
-        <GoalList
-          userId={userId}
-          goals={convertGoalsToExpandableGoals(goals, items)}
-          readOnly={!isAdmin}
-        />
-      </main>
+    <div className="flex flex-col p-4">
+      <div className="flex items-start w-full items-center gap-4">
+        {isAdmin && <AddItemDialogButton userId={userId} />}
+      </div>
+      <GoalList
+        userId={userId}
+        goals={convertGoalsToExpandableGoals(goals, items)}
+        readOnly={!isAdmin}
+      />
     </div>
   );
 }

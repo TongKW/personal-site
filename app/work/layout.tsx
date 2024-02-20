@@ -12,20 +12,21 @@ export default function RootLayout({
   const pathSegments = requestUrl.split("/");
   const mode = pathSegments[pathSegments.length - 1];
 
-  const buttonText = mode === "system" ? "View Chart" : "Back to System";
-  const href = mode === "system" ? "/work/chart" : "/work/system";
+  const buttonText = mode.startsWith("system")
+    ? "View Chart"
+    : "Back to System";
+  const href = mode.startsWith("system") ? "/work/chart" : "/work/system";
+  const header = mode.startsWith("system") ? "System" : "Chart";
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <main className="flex flex-col items-center w-full flex-1 px-20 text-center">
-        <div className="flex items-start w-full items-center gap-4">
-          <h1 className="text-3xl font-bold my-6">{`Work System`}</h1>
-          <a href={href}>
-            <Button variant="outline">{buttonText}</Button>
-          </a>
-        </div>
-        {children}
-      </main>
+    <div className="flex flex-col items-center justify-center px-8 relative">
+      <div className="flex absolute top-0 left-4 items-center gap-4">
+        <h1 className="text-xl font-bold my-6">{`Work (${header})`}</h1>
+        <a href={href}>
+          <Button variant="outline">{buttonText}</Button>
+        </a>
+      </div>
+      {children}
     </div>
   );
 }
