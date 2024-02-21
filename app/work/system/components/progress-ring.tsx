@@ -192,7 +192,7 @@ export function ProgressRing(props: {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>{props.children}</TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent className="bg-white">
             <ProgressTooltipContent items={items} />
           </TooltipContent>
         </Tooltip>

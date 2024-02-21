@@ -43,7 +43,7 @@ export function AddWorkDialog(props: {
   return (
     <Dialog open={open}>
       <DialogContent
-        className="sm:max-w-[600px]"
+        className="sm:max-w-[600px] bg-white"
         onClose={() => setOpen(false)}
       >
         <DialogHeader>
