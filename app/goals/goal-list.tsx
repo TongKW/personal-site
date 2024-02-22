@@ -9,17 +9,9 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { WorkHistorySheetContent } from "@/components/work-history";
+import clsx from "clsx";
 
 export function GoalList(props: {
   userId?: string;
@@ -30,7 +22,7 @@ export function GoalList(props: {
   const { goals, userId, readOnly = true, depth = 0 } = props;
 
   return (
-    <div className="flex flex-col w-full group gap-4">
+    <div className="flex flex-col w-full group gap-2">
       {goals.map((goal) => (
         <ContextMenu
           key={goal.type === "ExpandableGoal" ? goal.goal.id : goal.item.id}
@@ -65,14 +57,17 @@ export function ExpandableGoalItem(props: {
   const [hovered, setHovered] = useState(false);
 
   const toggleExpand = () => {
+    if (!data.children.length) return;
     setIsExpanded(!isExpanded);
   };
 
   return (
     <div
-      className={`z-${depth} w-full relative shadow-md border px-3 py-2 rounded ${
-        hovered ? "border-gray-400" : ""
-      }`}
+      className={clsx(
+        `z-${depth} w-full relative shadow-md border px-2 pt-1 rounded`,
+        { "pb-3": isExpanded },
+        { "border-gray-400": hovered }
+      )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -91,7 +86,9 @@ export function ExpandableGoalItem(props: {
         </div>
       )}
       <div
-        className="flexjustify-between items-center"
+        className={clsx("flex justify-between items-center", {
+          "cursor-default": !data.children.length,
+        })}
         onClick={toggleExpand}
         role="button"
         tabIndex={0}
@@ -106,7 +103,7 @@ export function ExpandableGoalItem(props: {
         )}
       </div>
 
-      <div className="w-full mb-4 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+      <div className="w-full mb-2 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
           className="bg-green-600 h-2.5 rounded-full"
           style={{ width: `${data.progress * 100}%` }}
@@ -132,7 +129,7 @@ export function UnitGoalItem(props: { data: UnitGoal }) {
   const itemStyle = data.item.finished ? "bg-green-200" : "bg-gray-200";
 
   return (
-    <div className={`border w-full p-2 shadow-inner rounded ${itemStyle}`}>
+    <div className={`border w-full p-2 mb-2 shadow-inner rounded ${itemStyle}`}>
       <div className="flex justify-between items-center">
         <span>{data.item.title}</span>
         <span>{data.item.finished ? "" : "In progress"}</span>
@@ -143,7 +140,6 @@ export function UnitGoalItem(props: { data: UnitGoal }) {
 
 function MenuContent({ goal }: { goal: ExpandableGoal | UnitGoal }) {
   const [sheetOpen, setSheetOpen] = useState(false);
-  console.log(`sheetOpen = ${sheetOpen}`);
   const onExpand = (goal: ExpandableGoal | UnitGoal) => {
     console.log(goal);
   };

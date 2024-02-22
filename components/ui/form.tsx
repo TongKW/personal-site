@@ -219,11 +219,12 @@ function FormGroupSelect(props: {
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={`Choose ${label.toLowerCase()}`} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectGroup>
               <SelectLabel>{label}</SelectLabel>
               {items.map((item) => (
                 <SelectItem
+                  className="cursor-pointer hover:bg-gray-100 rounded-sm"
                   key={(item.key || item.value)
                     .replaceAll(" ", "-")
                     .toLowerCase()}

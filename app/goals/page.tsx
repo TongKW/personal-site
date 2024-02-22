@@ -38,7 +38,7 @@ export default async function Goals() {
   const isAdmin = userId === process.env.NEXT_PUBLIC_ADMIN_ID;
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col py-4 px-10">
       <div className="flex items-start w-full items-center gap-4">
         {isAdmin && <AddItemDialogButton userId={userId} />}
       </div>
