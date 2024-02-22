@@ -91,7 +91,7 @@ export function ExpandableGoalItem(props: {
         </div>
       )}
       <div
-        className="flex mb-2 justify-between items-center"
+        className="flexjustify-between items-center"
         onClick={toggleExpand}
         role="button"
         tabIndex={0}
@@ -132,7 +132,7 @@ export function UnitGoalItem(props: { data: UnitGoal }) {
   const itemStyle = data.item.finished ? "bg-green-200" : "bg-gray-200";
 
   return (
-    <div className={`border w-full p-2 mb-2 shadow-inner rounded ${itemStyle}`}>
+    <div className={`border w-full p-2 shadow-inner rounded ${itemStyle}`}>
       <div className="flex justify-between items-center">
         <span>{data.item.title}</span>
         <span>{data.item.finished ? "" : "In progress"}</span>
