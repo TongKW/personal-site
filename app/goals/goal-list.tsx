@@ -64,8 +64,8 @@ export function ExpandableGoalItem(props: {
   return (
     <div
       className={clsx(
-        `z-${depth} w-full relative shadow-md border px-2 pt-1 rounded`,
-        { "pb-3": isExpanded },
+        `z-${depth} w-full relative shadow-md border p-2 rounded`,
+        { "pb-1": !isExpanded },
         { "border-gray-400": hovered }
       )}
       onMouseEnter={() => setHovered(true)}
@@ -103,7 +103,7 @@ export function ExpandableGoalItem(props: {
         )}
       </div>
 
-      <div className="w-full mb-2 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
         <div
           className="bg-green-600 h-2.5 rounded-full"
           style={{ width: `${data.progress * 100}%` }}
@@ -111,13 +111,16 @@ export function ExpandableGoalItem(props: {
       </div>
 
       {isExpanded && (
-        <GoalList
-          key={data.goal.id}
-          readOnly={readOnly}
-          userId={userId}
-          goals={data.children}
-          depth={depth + 1}
-        />
+        <>
+          <div className="min-h-2" />
+          <GoalList
+            key={data.goal.id}
+            readOnly={readOnly}
+            userId={userId}
+            goals={data.children}
+            depth={depth + 1}
+          />
+        </>
       )}
     </div>
   );
@@ -129,7 +132,9 @@ export function UnitGoalItem(props: { data: UnitGoal }) {
   const itemStyle = data.item.finished ? "bg-green-200" : "bg-gray-200";
 
   return (
-    <div className={`border w-full p-2 mb-2 shadow-inner rounded ${itemStyle}`}>
+    <div
+      className={`border w-full px-2 py-1 shadow-inner rounded ${itemStyle}`}
+    >
       <div className="flex justify-between items-center">
         <span>{data.item.title}</span>
         <span>{data.item.finished ? "" : "In progress"}</span>
