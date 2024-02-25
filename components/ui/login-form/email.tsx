@@ -80,11 +80,12 @@ export function SupabaseEmailLoginForm() {
   return (
     <EmailLoginForm
       onEmailLogin={async ({ email, password }) => {
-        await signInWithEmail({
+        const data = await signInWithEmail({
           supabase,
           email,
           password,
         });
+        console.log(data);
       }}
     />
   );

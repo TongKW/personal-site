@@ -178,7 +178,7 @@ function GoalItemSelectBox(props: {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] p-0 h-[350px]">
+      <PopoverContent className="w-[350px] p-0 h-[350px] bg-white z-[999]">
         <Command>
           <CommandInput placeholder="Search item..." className="h-9" />
           <CommandEmpty>No Item found.</CommandEmpty>
@@ -190,7 +190,7 @@ function GoalItemSelectBox(props: {
                   key={item.id}
                   value={getTitle(item)}
                   onSelect={(title) => {
-                    if (getTitle(item) === title) {
+                    if (getTitle(selectedItem) === title) {
                       setSelectedItem(undefined);
                       setOpen(false);
                       return;
